@@ -29,10 +29,6 @@ public class PrintUtils {
             String format = bold ? boldFormat : normalFormat;
             this.code = String.format(format, code);
         }
-
-        public String value() {
-            return code;
-        }
     }
 
     public static String paint(IpAddress addr) {
