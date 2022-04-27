@@ -2,45 +2,14 @@ package calculator;
 
 import util.PrintUtils;
 
-import java.net.UnknownHostException;
-import java.util.Arrays;
 import java.util.Objects;
 
 public class IpCalculator {
 
-    public static IpAddress safeCreateIpAddress(int g1, int g2, int g3, int g4) {
-        try {
-            return new IpAddress(g1, g2, g3, g4);
-        } catch (UnknownHostException e) {
-            System.out.println("Ip e vendosur nuk është e saktë");
-            return null;
-        }
-    }
-
     public static void compareClasses(IpAddress addr1, IpAddress addr2) {
-        String onSuccess = "%s dhe %s ndodhen në të njëjtën klasë%n";
-        String onFailure = "%s dhe %s NUK ndodhen në të njëjtën klasë%n";
-        String format = IpCalculator.shareTheSameClass(addr1, addr2) ? onSuccess : onFailure;
-        System.out.printf(format, PrintUtils.purple(addr1), PrintUtils.purple(addr2));
-    }
-
-    public static void compareNetworkIds(IpAddress addr1, IpAddress addr2) {
-        String onSuccess = "%s dhe %s ndodhen në të njëjtin network%n";
-        String onFailure = "%s dhe %s NUK ndodhen në të njëjtin network%n";
-        String format = IpCalculator.shareTheSameNetwork(addr1, addr2) ? onSuccess : onFailure;
-        System.out.printf(format, PrintUtils.purple(addr1), PrintUtils.purple(addr2));
-    }
-
-    public static void calculateNetworkId(IpAddress addr) {
-        String ip = PrintUtils.purple(addr);
-        String network = PrintUtils.purple(addr.getNetworkId());
-        System.out.printf("Network ID e %s është %s%n", ip, network);
-    }
-
-    public static void calculateBroadcastId(IpAddress addr) {
-        String ip = PrintUtils.purple(addr);
-        String broadcast = PrintUtils.purple(addr.getBroadcastId());
-        System.out.printf("Broadcast ID e %s është %s%n", ip, broadcast);
+        String onSuccess = "\t\tNdodhen në të njëjtën klasë!";
+        String onFailure = "\t\tNuk ndodhen në të njëjtën klasë!";
+        System.out.println(shareTheSameClass(addr1, addr2) ? onSuccess : onFailure);
     }
 
     private static boolean shareTheSameClass(IpAddress addr1, IpAddress addr2) {
@@ -49,9 +18,29 @@ public class IpCalculator {
         return Objects.equals(c1, c2);
     }
 
+    public static void compareNetworkIds(IpAddress addr1, IpAddress addr2) {
+        String onSuccess = "\t\tNdodhen në të njëjtin network!";
+        String onFailure = "\t\tNuk ndodhen në të njëjtin network!";
+        System.out.println(shareTheSameNetwork(addr1, addr2) ? onSuccess : onFailure);
+    }
+
     private static boolean shareTheSameNetwork(IpAddress addr1, IpAddress addr2) {
         String networkId1 = addr1.getNetworkId();
         String networkId2 = addr2.getNetworkId();
         return Objects.equals(networkId1, networkId2);
+    }
+
+    public static void calculateNetworkId(IpAddress addr) {
+        String network = PrintUtils.purple(addr.getNetworkId());
+        System.out.printf("\t\tNetwork ID: %s%n", network);
+    }
+
+    public static void calculateBroadcastId(IpAddress addr) {
+        String broadcast = PrintUtils.purple(addr.getBroadcastId());
+        System.out.printf("\t\tBroadcast ID: %s%n", broadcast);
+    }
+
+    public static void calculateTotalHosts(IpAddress addr) {
+        System.out.printf("\t\tNumri i hosteve: %s%n", addr.getTotalHosts());
     }
 }

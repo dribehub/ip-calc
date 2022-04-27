@@ -1,89 +1,90 @@
 package calculator;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Arrays;
-
 public class IpAddress {
 
-    private final String[] octets;
-    private final InetAddress inet;
+    private final String hostName;
+    private final NetworkClass networkClass;
+    private final int address;
+    private final int mask;
+    private final int network;
+    private final int broadcast;
+    private final int value;
 
-    public IpAddress(int g1, int g2, int g3, int g4) throws UnknownHostException {
-        octets = new String[] { // "%03d"
-                String.valueOf(g1),
-                String.valueOf(g2),
-                String.valueOf(g3),
-                String.valueOf(g4)
-        };
-        String host = String.join(".", octets);
-        inet = InetAddress.getByName(host);
+    public IpAddress(String o1, String o2, String o3, String o4, int mask) {
+        int[] ints = toInts(o1, o2, o3, o4);
+        hostName = String.join(".", new String[]{o1, o2, o3, o4});
+        networkClass = findNetworkClass(o1);
+        address = (ints[0] << 24) | (ints[1] << 16) | (ints[2] << 8) | (ints[3]);
+        this.mask = (int) (Math.pow(2, mask) - 1) << (32 - mask);
+        network = address & this.mask;
+        broadcast = network | ~this.mask;
+        value = 32 - mask;
     }
 
-    public long toLong() {
-        long result = 0;
-        for (byte octet : inet.getAddress()) {
-            result <<= 8;
-            result |= octet & 0xff;
+    private NetworkClass findNetworkClass(String octet) {
+        int classOctet = Integer.parseInt(octet);
+        if (classOctet < 128) return NetworkClass.A;
+        if (classOctet < 192) return NetworkClass.B;
+        if (classOctet < 224) return NetworkClass.C;
+        if (classOctet < 240) return NetworkClass.D;
+        if (classOctet < 256) return NetworkClass.E;
+        return null;
+    }
+
+    private int[] toInts(String... octets) {
+        int value;
+        int[] result = new int[octets.length];
+        for (int i = 0; i < result.length; i++) {
+            value = Integer.parseInt(octets[i]);
+            if (value < 0 || value > 255)
+                throw new NumberFormatException();
+            result[i] = value;
         }
         return result;
     }
 
-    public NetworkClass getNetworkClass() {
-        long ip = toLong();
-        if (ip < NetworkClass.B.getStartAddress().toLong())
-            return NetworkClass.A;
-        if (ip < NetworkClass.C.getStartAddress().toLong())
-            return NetworkClass.B;
-        if (ip < NetworkClass.D.getStartAddress().toLong())
-            return NetworkClass.C;
-        if (ip < NetworkClass.E.getStartAddress().toLong())
-            return NetworkClass.D;
-        if (ip <= NetworkClass.E.getEndAddress().toLong())
-            return NetworkClass.E;
-        return null;
-    }
-
-    public String[] getNetworkOctets() {
-        if (NetworkClass.A.equals(getNetworkClass()))
-            return new String[]{octets[0]};
-        if (NetworkClass.B.equals(getNetworkClass()))
-            return new String[]{octets[0], octets[1]};
-        if (NetworkClass.C.equals(getNetworkClass()))
-            return new String[]{octets[0], octets[1], octets[2]};
-        return octets;
-    }
-
-    public String getNetworkId() {
-        String[] networkOctets = getNetworkOctets();
-        String joinedOctets = String.join(".", networkOctets);
-        return joinedOctets + ".0".repeat(4 - networkOctets.length);
-    }
-
-    public String getBroadcastId() {
-        return null;
+    private String toOctets(int ip) {
+        return String.format("%d.%d.%d.%d",
+                ip >> 24 & 0xff,
+                ip >> 16 & 0xff,
+                ip >> 8 & 0xff,
+                ip & 0xff
+        );
     }
 
     public String getHostName() {
-        String[] simpleOctets = new String[4];
-        for (int i = 0; i < octets.length; i++)
-            simpleOctets[i] = String.valueOf(Integer.parseInt(octets[i]));
-        return String.join(".", simpleOctets);
+        return hostName;
     }
 
-    public String[] getOctets() {
-        return octets;
+    public NetworkClass getNetworkClass() {
+        return networkClass;
     }
 
-    public InetAddress getInet() {
-        return inet;
+    public String getAddress() {
+        return String.valueOf(address);
     }
 
-    @Override
-    public boolean equals(Object other) {
-        if (this == other) return true;
-        if (other == null || getClass() != other.getClass()) return false;
-        IpAddress ipAddress = (IpAddress) other;
-        return Arrays.equals(octets, ipAddress.octets);
+    public String getMask() {
+        return String.valueOf(mask);
+    }
+
+    public String getNetworkId() {
+        return toOctets(network) + "/" + (32 - this.value);
+    }
+
+    public String getBroadcastId() {
+        return toOctets(broadcast);
+    }
+
+    public int getTotalHosts() {
+        return (int) (Math.pow(2, this.value) - 2);
+    }
+
+    public String getFirstAddress() {
+        return toOctets(network + 1);
+    }
+
+    public String getLastAddress() {
+        return toOctets(broadcast - 1);
     }
 }

@@ -1,6 +1,5 @@
 package calculator;
 
-import java.net.UnknownHostException;
 import java.util.Objects;
 
 public class NetworkClass {
@@ -24,33 +23,29 @@ public class NetworkClass {
 
     public static NetworkClass get(char name) {
         IpAddress startAddress, endAddress;
-        try {
-            switch (name) {
-                case 'A':
-                    startAddress = new IpAddress(0, 0, 0, 0);
-                    endAddress = new IpAddress(127, 255, 255, 255);
-                    return new NetworkClass(startAddress, endAddress, 8);
-                case 'B':
-                    startAddress = new IpAddress(128, 0, 0, 0);
-                    endAddress = new IpAddress(191, 255, 255, 255);
-                    return new NetworkClass(startAddress, endAddress, 16);
-                case 'C':
-                    startAddress = new IpAddress(192, 0, 0, 0);
-                    endAddress = new IpAddress(223, 255, 255, 255);
-                    return new NetworkClass(startAddress, endAddress, 24);
-                case 'D':
-                    startAddress = new IpAddress(224, 0, 0, 0);
-                    endAddress = new IpAddress(239, 255, 255, 255);
-                    return new NetworkClass(startAddress, endAddress, null);
-                case 'E':
-                    startAddress = new IpAddress(240, 0, 0, 0);
-                    endAddress = new IpAddress(255, 255, 255, 255);
-                    return new NetworkClass(startAddress, endAddress, null);
-                default:
-                    return null;
-            }
-        } catch (UnknownHostException e) {
-            return null;
+        switch (name) {
+            case 'A':
+                startAddress = new IpAddress("0", "0", "0", "0", 8);
+                endAddress = new IpAddress("127", "255", "255", "255", 8);
+                return new NetworkClass(startAddress, endAddress, 8);
+            case 'B':
+                startAddress = new IpAddress("128", "0", "0", "0", 16);
+                endAddress = new IpAddress("191", "255", "255", "255", 16);
+                return new NetworkClass(startAddress, endAddress, 16);
+            case 'C':
+                startAddress = new IpAddress("192", "0", "0", "0", 24);
+                endAddress = new IpAddress("223", "255", "255", "255", 24);
+                return new NetworkClass(startAddress, endAddress, 24);
+            case 'D':
+                startAddress = new IpAddress("224", "0", "0", "0", 0);
+                endAddress = new IpAddress("239", "255", "255", "255", 0);
+                return new NetworkClass(startAddress, endAddress, null);
+            case 'E':
+                startAddress = new IpAddress("240", "0", "0", "0", 0);
+                endAddress = new IpAddress("255", "255", "255", "255", 0);
+                return new NetworkClass(startAddress, endAddress, null);
+            default:
+                return null;
         }
     }
 

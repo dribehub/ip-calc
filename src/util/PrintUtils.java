@@ -31,6 +31,14 @@ public class PrintUtils {
         }
     }
 
+    public static String red(String str) {
+        return ANSI.RED.code + str + ANSI.NORMAL.code;
+    }
+
+    public static String green(String str) {
+        return ANSI.GREEN.code + str + ANSI.NORMAL.code;
+    }
+
     public static String purple(IpAddress addr) {
         return ANSI.PURPLE.code + addr.getHostName() + ANSI.NORMAL.code;
     }
@@ -39,7 +47,7 @@ public class PrintUtils {
         return ANSI.PURPLE.code + addr + ANSI.NORMAL.code;
     }
 
-    public static void printTitle(String str) {
+    public static void printHeader(String str) {
         System.out.println(ANSI.GREEN.code + str + ANSI.NORMAL.code);
     }
 }
