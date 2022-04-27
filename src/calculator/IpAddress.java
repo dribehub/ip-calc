@@ -56,7 +56,7 @@ public class IpAddress {
 
     public String getNetworkId() {
         String[] networkOctets = getNetworkOctets();
-        String joinedOctets = String.join(".", getNetworkOctets());
+        String joinedOctets = String.join(".", networkOctets);
         return joinedOctets + ".0".repeat(4 - networkOctets.length);
     }
 

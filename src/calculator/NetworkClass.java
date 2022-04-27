@@ -7,7 +7,7 @@ public class NetworkClass {
 
     private final IpAddress startAddress;
     private final IpAddress endAddress;
-    private final Integer subnetMask;
+    private final String subnetMask;
 
     public static NetworkClass A = get('A');
     public static NetworkClass B = get('B');
@@ -18,7 +18,8 @@ public class NetworkClass {
     private NetworkClass(IpAddress startAddress, IpAddress endAddress, Integer subnetMask) {
         this.startAddress = startAddress;
         this.endAddress = endAddress;
-        this.subnetMask = subnetMask;
+        this.subnetMask = subnetMask == null ? null
+                : Integer.toBinaryString(subnetMask);
     }
 
     public static NetworkClass get(char name) {
@@ -61,7 +62,7 @@ public class NetworkClass {
         return endAddress;
     }
 
-    public Integer getSubnetMask() {
+    public String getSubnetMask() {
         return subnetMask;
     }
 

@@ -14,6 +14,7 @@ public class Main {
         //      4) IP e fundit,
         //      5) # i hosteve (te vlefshme per subnetin)
         //    per nje Network ID dhe # e subneteve te dhene
+
         TestIpCalculator.compareClassesAndNetworkIds();
         TestIpCalculator.calculateNetworkIdAndBroadcastId();
     }
