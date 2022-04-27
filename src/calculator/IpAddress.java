@@ -48,10 +48,10 @@ public class IpAddress {
     }
 
     public String getHostName() {
-        String[] simpleOctet = new String[4];
+        String[] simpleOctets = new String[4];
         for (int i = 0; i < octets.length; i++)
-            simpleOctet[i] = String.valueOf(Integer.parseInt(octets[i]));
-        return String.join(".", simpleOctet);
+            simpleOctets[i] = String.valueOf(Integer.parseInt(octets[i]));
+        return String.join(".", simpleOctets);
     }
 
     public String[] getOctets() {
