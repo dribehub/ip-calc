@@ -1,6 +1,7 @@
 package calculator;
 
 import java.net.UnknownHostException;
+import java.util.Objects;
 
 public class NetworkClass {
 
@@ -66,5 +67,15 @@ public class NetworkClass {
 
     public boolean hasSubnetMask() {
         return subnetMask != null;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (!(other instanceof NetworkClass)) return false;
+        NetworkClass networkClass = (NetworkClass) other;
+        return Objects.equals(this.startAddress, networkClass.startAddress)
+                && Objects.equals(this.endAddress, networkClass.endAddress)
+                && Objects.equals(this.subnetMask, networkClass.subnetMask);
     }
 }

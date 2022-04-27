@@ -31,11 +31,15 @@ public class PrintUtils {
         }
     }
 
-    public static String paint(IpAddress addr) {
+    public static String purple(IpAddress addr) {
         return ANSI.PURPLE.code + addr.getHostName() + ANSI.NORMAL.code;
     }
 
+    public static String purple(String addr) {
+        return ANSI.PURPLE.code + addr + ANSI.NORMAL.code;
+    }
+
     public static void printTitle(String str) {
-        System.out.println(ANSI.GREEN.code + str.toUpperCase() + ANSI.NORMAL.code);
+        System.out.println(ANSI.GREEN.code + str + ANSI.NORMAL.code);
     }
 }

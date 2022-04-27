@@ -2,6 +2,7 @@ package calculator;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 
 public class IpAddress {
 
@@ -9,42 +10,58 @@ public class IpAddress {
     private final InetAddress inet;
 
     public IpAddress(int g1, int g2, int g3, int g4) throws UnknownHostException {
-        octets = new String[] {
-                String.format("%03d", g1),
-                String.format("%03d", g2),
-                String.format("%03d", g3),
-                String.format("%03d", g4)
+        octets = new String[] { // "%03d"
+                String.valueOf(g1),
+                String.valueOf(g2),
+                String.valueOf(g3),
+                String.valueOf(g4)
         };
         String host = String.join(".", octets);
         inet = InetAddress.getByName(host);
     }
 
-    public static long toLong(IpAddress ipAddress) {
+    public long toLong() {
         long result = 0;
-        for (byte octet : ipAddress.inet.getAddress()) {
+        for (byte octet : inet.getAddress()) {
             result <<= 8;
             result |= octet & 0xff;
         }
         return result;
     }
 
-    public static NetworkClass getNetworkClass(IpAddress ipAddress) {
-        long ip = toLong(ipAddress);
-        if (ip < toLong(NetworkClass.B.getStartAddress()))
+    public NetworkClass getNetworkClass() {
+        long ip = toLong();
+        if (ip < NetworkClass.B.getStartAddress().toLong())
             return NetworkClass.A;
-        if (ip < toLong(NetworkClass.C.getStartAddress()))
+        if (ip < NetworkClass.C.getStartAddress().toLong())
             return NetworkClass.B;
-        if (ip < toLong(NetworkClass.D.getStartAddress()))
+        if (ip < NetworkClass.D.getStartAddress().toLong())
             return NetworkClass.C;
-        if (ip < toLong(NetworkClass.E.getStartAddress()))
+        if (ip < NetworkClass.E.getStartAddress().toLong())
             return NetworkClass.D;
-        if (ip <= toLong(NetworkClass.E.getEndAddress()))
+        if (ip <= NetworkClass.E.getEndAddress().toLong())
             return NetworkClass.E;
         return null;
     }
 
-    public static String getNetworkId(IpAddress ipAddress) {
-        return ipAddress.inet.getHostName().split("\\.")[0];
+    public String[] getNetworkOctets() {
+        if (NetworkClass.A.equals(getNetworkClass()))
+            return new String[]{octets[0]};
+        if (NetworkClass.B.equals(getNetworkClass()))
+            return new String[]{octets[0], octets[1]};
+        if (NetworkClass.C.equals(getNetworkClass()))
+            return new String[]{octets[0], octets[1], octets[2]};
+        return octets;
+    }
+
+    public String getNetworkId() {
+        String[] networkOctets = getNetworkOctets();
+        String joinedOctets = String.join(".", getNetworkOctets());
+        return joinedOctets + ".0".repeat(4 - networkOctets.length);
+    }
+
+    public String getBroadcastId() {
+        return null;
     }
 
     public String getHostName() {
@@ -60,5 +77,13 @@ public class IpAddress {
 
     public InetAddress getInet() {
         return inet;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+        IpAddress ipAddress = (IpAddress) other;
+        return Arrays.equals(octets, ipAddress.octets);
     }
 }
