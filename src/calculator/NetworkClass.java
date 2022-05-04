@@ -6,47 +6,58 @@ public class NetworkClass {
 
     private final IpAddress startAddress;
     private final IpAddress endAddress;
-    private final String subnetMask;
+    private final String defaultSubnetMask;
+    private final char name;
 
-    public static NetworkClass A = get('A');
-    public static NetworkClass B = get('B');
-    public static NetworkClass C = get('C');
-    public static NetworkClass D = get('D');
-    public static NetworkClass E = get('E');
+    public static NetworkClass A = get('A', 8);
+    public static NetworkClass B = get('B', 16);
+    public static NetworkClass C = get('C', 24);
+    public static NetworkClass D = get('D', null);
+    public static NetworkClass E = get('E', null);
 
-    private NetworkClass(IpAddress startAddress, IpAddress endAddress, Integer subnetMask) {
-        this.startAddress = startAddress;
-        this.endAddress = endAddress;
-        this.subnetMask = subnetMask == null ? null
-                : Integer.toBinaryString(subnetMask);
+    private NetworkClass(IpAddress from, IpAddress to, Integer defaultSubnetMask, char name) {
+        this.startAddress = from;
+        this.endAddress = to;
+        this.defaultSubnetMask = defaultSubnetMask == null ? null
+                : Integer.toBinaryString(defaultSubnetMask);
+        this.name = name;
     }
 
-    public static NetworkClass get(char name) {
-        IpAddress startAddress, endAddress;
+    private static NetworkClass get(char name, Integer mask) {
+        IpAddress from, to;
+        int safeMask = mask == null ? 0 : mask;
         switch (name) {
             case 'A':
-                startAddress = new IpAddress("0", "0", "0", "0", 8);
-                endAddress = new IpAddress("127", "255", "255", "255", 8);
-                return new NetworkClass(startAddress, endAddress, 8);
+                from = new IpAddress(0, 0, 0, 0, safeMask);
+                to = new IpAddress(126, 255, 255, 255, safeMask);
+                return new NetworkClass(from, to, mask, name);
             case 'B':
-                startAddress = new IpAddress("128", "0", "0", "0", 16);
-                endAddress = new IpAddress("191", "255", "255", "255", 16);
-                return new NetworkClass(startAddress, endAddress, 16);
+                from = new IpAddress(127, 0, 0, 0, safeMask);
+                to = new IpAddress(190, 255, 255, 255, safeMask);
+                return new NetworkClass(from, to, mask, name);
             case 'C':
-                startAddress = new IpAddress("192", "0", "0", "0", 24);
-                endAddress = new IpAddress("223", "255", "255", "255", 24);
-                return new NetworkClass(startAddress, endAddress, 24);
+                from = new IpAddress(191, 0, 0, 0, safeMask);
+                to = new IpAddress(222, 255, 255, 255, safeMask);
+                return new NetworkClass(from, to, mask, name);
             case 'D':
-                startAddress = new IpAddress("224", "0", "0", "0", 0);
-                endAddress = new IpAddress("239", "255", "255", "255", 0);
-                return new NetworkClass(startAddress, endAddress, null);
+                from = new IpAddress(223, 0, 0, 0, safeMask);
+                to = new IpAddress(238, 255, 255, 255, safeMask);
+                return new NetworkClass(from, to, mask, name);
             case 'E':
-                startAddress = new IpAddress("240", "0", "0", "0", 0);
-                endAddress = new IpAddress("255", "255", "255", "255", 0);
-                return new NetworkClass(startAddress, endAddress, null);
+                from = new IpAddress(239, 0, 0, 0, safeMask);
+                to = new IpAddress(254, 255, 255, 255, safeMask);
+                return new NetworkClass(from, to, mask, name);
             default:
                 return null;
         }
+    }
+
+    public NetworkClass applyMask(int mask) {
+        return get(name, mask);
+    }
+
+    public char getName() {
+        return name;
     }
 
     public IpAddress getStartAddress() {
@@ -57,12 +68,12 @@ public class NetworkClass {
         return endAddress;
     }
 
-    public String getSubnetMask() {
-        return subnetMask;
+    public String getDefaultSubnetMask() {
+        return defaultSubnetMask;
     }
 
     public boolean hasSubnetMask() {
-        return subnetMask != null;
+        return defaultSubnetMask != null;
     }
 
     @Override
@@ -72,6 +83,6 @@ public class NetworkClass {
         NetworkClass networkClass = (NetworkClass) other;
         return Objects.equals(this.startAddress, networkClass.startAddress)
                 && Objects.equals(this.endAddress, networkClass.endAddress)
-                && Objects.equals(this.subnetMask, networkClass.subnetMask);
+                && Objects.equals(this.defaultSubnetMask, networkClass.defaultSubnetMask);
     }
 }

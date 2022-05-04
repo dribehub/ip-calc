@@ -2,13 +2,14 @@ package calculator;
 
 import util.PrintUtils;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 public class IpCalculator {
 
     public static void compareClasses(IpAddress addr1, IpAddress addr2) {
-        String onSuccess = "\t\tNdodhen në të njëjtën klasë!";
-        String onFailure = "\t\tNuk ndodhen në të njëjtën klasë!";
+        String onSuccess = "\t✔ Ndodhen në të njëjtën klasë!";
+        String onFailure = "\t❌ Nuk ndodhen në të njëjtën klasë!";
         System.out.println(shareTheSameClass(addr1, addr2) ? onSuccess : onFailure);
     }
 
@@ -19,8 +20,8 @@ public class IpCalculator {
     }
 
     public static void compareNetworkIds(IpAddress addr1, IpAddress addr2) {
-        String onSuccess = "\t\tNdodhen në të njëjtin network!";
-        String onFailure = "\t\tNuk ndodhen në të njëjtin network!";
+        String onSuccess = "\t✔ Ndodhen në të njëjtin network!";
+        String onFailure = "\t❌ Nuk ndodhen në të njëjtin network!";
         System.out.println(shareTheSameNetwork(addr1, addr2) ? onSuccess : onFailure);
     }
 
@@ -32,15 +33,38 @@ public class IpCalculator {
 
     public static void calculateNetworkId(IpAddress addr) {
         String network = PrintUtils.purple(addr.getNetworkId());
-        System.out.printf("\t\tNetwork ID: %s%n", network);
+        System.out.printf("\tNetwork ID: %s%n", network);
     }
 
     public static void calculateBroadcastId(IpAddress addr) {
         String broadcast = PrintUtils.purple(addr.getBroadcastId());
-        System.out.printf("\t\tBroadcast ID: %s%n", broadcast);
+        System.out.printf("\tBroadcast ID: %s%n", broadcast);
     }
 
-    public static void calculateTotalHosts(IpAddress addr) {
-        System.out.printf("\t\tNumri i hosteve: %s%n", addr.getTotalHosts());
+    private static void calculateTotalHosts(IpAddress addr) {
+        System.out.printf("\tNumri i hosteve: %s%n", addr.getTotalHosts());
+    }
+
+    public static void calculateSubnetId(String networkId) {
+        String[] octets = getOctets(networkId);
+        Integer mask = getMask(networkId);
+        assert mask != null;
+        String maskId = IpAddress.getMaskId(mask);
+        System.out.println("\tSubnet ID:");
+        String subnetId = PrintUtils.purple("");
+    }
+
+    private static String[] getOctets(String addr) {
+        return addr.split("\\.");
+    }
+
+    private static Integer getMask(String addr) {
+        if (!addr.contains("/")) return null;
+        String mask = addr.split("/")[1];
+        try {
+            return Integer.parseInt(mask);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 }
