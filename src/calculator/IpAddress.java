@@ -1,5 +1,7 @@
 package calculator;
 
+import util.StringUtils;
+
 import java.util.stream.Stream;
 
 public class IpAddress {
@@ -89,22 +91,18 @@ public class IpAddress {
     }
 
     public static String getMaskId(int mask) {
-        switch(mask) {
-            case 0:
-                return "0.0.0.0/0";
-            case 8:
-                return "255.0.0.0/8";
-            case 16:
-                return "255.255.0.0/16";
-            case 24:
-                return "255.255.255.0/24";
-            default:
-                throw new IllegalStateException();
-        }
+        return switch (mask) {
+            case 0 -> "0.0.0.0/0";
+            case 8 -> "255.0.0.0/8";
+            case 16 -> "255.255.0.0/16";
+            case 24 -> "255.255.255.0/24";
+            default -> throw new IllegalStateException();
+        };
     }
 
     public String getNetworkId() {
-        return toOctets(network) + "/" + (32 - this.value);
+        String networkId = toOctets(network) + "/" + (32 - this.value);
+        return StringUtils.purple(networkId);
     }
 
     public String getBroadcastId() {
@@ -121,5 +119,10 @@ public class IpAddress {
 
     public String getLastAddress() {
         return toOctets(broadcast - 1);
+    }
+
+    @Override
+    public String toString() {
+        return StringUtils.purple(this);
     }
 }

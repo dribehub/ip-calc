@@ -1,8 +1,7 @@
 package calculator;
 
-import util.PrintUtils;
+import util.StringUtils;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 public class IpCalculator {
@@ -32,13 +31,11 @@ public class IpCalculator {
     }
 
     public static void calculateNetworkId(IpAddress addr) {
-        String network = PrintUtils.purple(addr.getNetworkId());
-        System.out.printf("\tNetwork ID: %s%n", network);
+        System.out.printf("\tNetwork ID: %s%n", addr.getNetworkId());
     }
 
     public static void calculateBroadcastId(IpAddress addr) {
-        String broadcast = PrintUtils.purple(addr.getBroadcastId());
-        System.out.printf("\tBroadcast ID: %s%n", broadcast);
+        System.out.printf("\tBroadcast ID: %s%n", addr.getBroadcastId());
     }
 
     private static void calculateTotalHosts(IpAddress addr) {
@@ -50,8 +47,8 @@ public class IpCalculator {
         Integer mask = getMask(networkId);
         assert mask != null;
         String maskId = IpAddress.getMaskId(mask);
-        System.out.println("\tSubnet ID:");
-        String subnetId = PrintUtils.purple("");
+        String subnetId = StringUtils.purple(maskId);
+        System.out.printf("\tSubnet ID: %s", subnetId);
     }
 
     private static String[] getOctets(String addr) {

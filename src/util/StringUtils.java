@@ -2,7 +2,7 @@ package util;
 
 import calculator.IpAddress;
 
-public class PrintUtils {
+public class StringUtils {
 
     public enum ANSI {
 
@@ -31,23 +31,27 @@ public class PrintUtils {
         }
     }
 
+    public static String paint(String str, ANSI color) {
+        return color.code + str + ANSI.NORMAL.code;
+    }
+
     public static String red(String str) {
-        return ANSI.RED.code + str + ANSI.NORMAL.code;
+        return paint(str, ANSI.RED);
     }
 
     public static String green(String str) {
-        return ANSI.GREEN.code + str + ANSI.NORMAL.code;
+        return paint(str, ANSI.GREEN);
+    }
+
+    public static String purple(String str) {
+        return paint(str, ANSI.PURPLE);
     }
 
     public static String purple(IpAddress addr) {
-        return ANSI.PURPLE.code + addr.getHostName() + ANSI.NORMAL.code;
-    }
-
-    public static String purple(String addr) {
-        return ANSI.PURPLE.code + addr + ANSI.NORMAL.code;
+        return paint(addr.getHostName(), ANSI.PURPLE);
     }
 
     public static void printHeader(String str) {
-        System.out.println(ANSI.GREEN.code + str + ANSI.NORMAL.code);
+        System.out.println(paint(str, ANSI.GREEN));
     }
 }

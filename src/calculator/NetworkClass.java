@@ -15,41 +15,49 @@ public class NetworkClass {
     public static NetworkClass D = get('D', null);
     public static NetworkClass E = get('E', null);
 
-    private NetworkClass(IpAddress from, IpAddress to, Integer defaultSubnetMask, char name) {
+    private NetworkClass(IpAddress from, IpAddress to, Integer mask, char name) {
         this.startAddress = from;
         this.endAddress = to;
-        this.defaultSubnetMask = defaultSubnetMask == null ? null
-                : Integer.toBinaryString(defaultSubnetMask);
+        this.defaultSubnetMask = mask == null ? null
+                : Integer.toBinaryString(mask);
         this.name = name;
     }
 
     private static NetworkClass get(char name, Integer mask) {
-        IpAddress from, to;
-        int safeMask = mask == null ? 0 : mask;
-        switch (name) {
-            case 'A':
-                from = new IpAddress(0, 0, 0, 0, safeMask);
-                to = new IpAddress(126, 255, 255, 255, safeMask);
-                return new NetworkClass(from, to, mask, name);
-            case 'B':
-                from = new IpAddress(127, 0, 0, 0, safeMask);
-                to = new IpAddress(190, 255, 255, 255, safeMask);
-                return new NetworkClass(from, to, mask, name);
-            case 'C':
-                from = new IpAddress(191, 0, 0, 0, safeMask);
-                to = new IpAddress(222, 255, 255, 255, safeMask);
-                return new NetworkClass(from, to, mask, name);
-            case 'D':
-                from = new IpAddress(223, 0, 0, 0, safeMask);
-                to = new IpAddress(238, 255, 255, 255, safeMask);
-                return new NetworkClass(from, to, mask, name);
-            case 'E':
-                from = new IpAddress(239, 0, 0, 0, safeMask);
-                to = new IpAddress(254, 255, 255, 255, safeMask);
-                return new NetworkClass(from, to, mask, name);
-            default:
-                return null;
-        }
+
+        int minVal = 0;
+        int maxVal = 255;
+        int maxA = 126;
+        int maxB = 190;
+        int maxC = 222;
+        int maxD = 238;
+        int maxE = 254;
+
+        int classMin = switch (name) {
+            case 'A' -> minVal;
+            case 'B' -> maxA + 1;
+            case 'C' -> maxB + 1;
+            case 'D' -> maxC + 1;
+            case 'E' -> maxD + 1;
+            default -> -1;
+        };
+
+        int classMax = switch (name) {
+            case 'A' -> maxA;
+            case 'B' -> maxB;
+            case 'C' -> maxC;
+            case 'D' -> maxD;
+            case 'E' -> maxE;
+            default -> -1;
+        };
+
+        if (classMin == classMax)
+            return null;
+
+        int safeMask = mask == null ? minVal : mask;
+        IpAddress from = new IpAddress(classMin, minVal, minVal, minVal, safeMask);
+        IpAddress to = new IpAddress(classMax, maxVal, maxVal, maxVal, safeMask);
+        return new NetworkClass(from, to, mask, name);
     }
 
     public NetworkClass applyMask(int mask) {
