@@ -6,13 +6,13 @@ import java.util.stream.Stream;
 
 public class IpAddress {
 
-    private final String hostName;
-    private final NetworkClass networkClass;
-    private final int address;
-    private final int mask;
-    private final int network;
-    private final int broadcast;
-    private final int value;
+    private String hostName;
+    private NetworkClass networkClass;
+    private int address;
+    private int mask;
+    private int network;
+    private int broadcast;
+    private int value;
 
     public IpAddress(int o1, int o2, int o3, int o4, int mask) {
         validateOctets(o1, o2, o3, o4);
@@ -24,6 +24,10 @@ public class IpAddress {
         network = address & this.mask;
         broadcast = network | ~this.mask;
         value = 32 - mask;
+    }
+
+    public IpAddress(int o1, int o2, int o3, int o4) {
+
     }
 
     private void validateOctets(int... octets) {

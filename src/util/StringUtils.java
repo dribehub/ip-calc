@@ -35,14 +35,6 @@ public class StringUtils {
         return color.code + str + ANSI.NORMAL.code;
     }
 
-    public static String red(String str) {
-        return paint(str, ANSI.RED);
-    }
-
-    public static String green(String str) {
-        return paint(str, ANSI.GREEN);
-    }
-
     public static String purple(String str) {
         return paint(str, ANSI.PURPLE);
     }
